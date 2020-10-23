@@ -4,7 +4,7 @@
 Player::Player() : mainSprite(nullptr), mcTex(0)
 {
 	mcTex = GFX::g_TextureManager->loadTex("./assets/mc.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, true);
-	mainSprite = new GFX::Render2D::CharacterSprite({64, 64}, new GFX::TextureAtlas(4), mcTex);
+	mainSprite = new GFX::Render2D::CharacterSprite({96, 96 }, new GFX::TextureAtlas(4), mcTex);
 
 	down = new GFX::Render2D::CharacterAnimInfo();
 	down->animLength = 4;
@@ -61,42 +61,45 @@ Player::~Player()
 {
 }
 
-void Player::update()
+void Player::update(double dt)
 {
-	if (Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyPressed(PSP_CTRL_DOWN)) {
+	const float playerSpeed = 32.0f * 3.2f;
+
+	if (Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyHold(PSP_CTRL_DOWN)) {
 		if (direction != Direction::Down) {
 			direction = Direction::Down;
 		}
 		mainSprite->triggerAnimEvent("down");
-
+		pos.y -= playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
-	if (Utilities::KeyPressed(GLFW_KEY_LEFT) || Utilities::KeyPressed(GLFW_KEY_A) || Utilities::KeyPressed(PSP_CTRL_LEFT)) {
+	if (Utilities::KeyPressed(GLFW_KEY_LEFT) || Utilities::KeyPressed(GLFW_KEY_A) || Utilities::KeyHold(PSP_CTRL_LEFT)) {
 		if (direction != Direction::Left) {
 			direction = Direction::Left;
 		}
 		mainSprite->triggerAnimEvent("left");
+		pos.x -= playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
-	if (Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyPressed(PSP_CTRL_RIGHT)) {
+	if (Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyHold(PSP_CTRL_RIGHT)) {
 		if (direction != Direction::Right) {
 			direction = Direction::Right;
 		}
 		mainSprite->triggerAnimEvent("right");
+		pos.x += playerSpeed * dt;
 		currentTickCount = 0;
 	}
 	
-	if (Utilities::KeyPressed(GLFW_KEY_UP) || Utilities::KeyPressed(GLFW_KEY_W) || Utilities::KeyPressed(PSP_CTRL_UP)) {
+	if (Utilities::KeyPressed(GLFW_KEY_UP) || Utilities::KeyPressed(GLFW_KEY_W) || Utilities::KeyHold(PSP_CTRL_UP)) {
 		if (direction != Direction::Top) {
 			direction = Direction::Top;
 		}
 		mainSprite->triggerAnimEvent("top");
+		pos.y += playerSpeed * dt;
 		currentTickCount = 0;
 	}
-
-	GFX::gfxSetView(glm::translate(glm::mat4(1), glm::vec3(pos.x - 240, pos.y - 136, 0)));
 
 }
 
@@ -105,10 +108,10 @@ void Player::tick()
 	mainSprite->tickPhase();
 
 	if (currentTickCount % 2 == 0) {
-		if (!(Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyPressed(PSP_CTRL_DOWN))) {
-			if (!(Utilities::KeyPressed(GLFW_KEY_UP) || Utilities::KeyPressed(GLFW_KEY_W) || Utilities::KeyPressed(PSP_CTRL_UP))) {
-				if (!(Utilities::KeyPressed(GLFW_KEY_LEFT) || Utilities::KeyPressed(GLFW_KEY_A) || Utilities::KeyPressed(PSP_CTRL_LEFT))) {
-					if (!(Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyPressed(PSP_CTRL_RIGHT))) {
+		if (!(Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyHold(PSP_CTRL_DOWN))) {
+			if (!(Utilities::KeyPressed(GLFW_KEY_UP) || Utilities::KeyPressed(GLFW_KEY_W) || Utilities::KeyHold(PSP_CTRL_UP))) {
+				if (!(Utilities::KeyPressed(GLFW_KEY_LEFT) || Utilities::KeyPressed(GLFW_KEY_A) || Utilities::KeyHold(PSP_CTRL_LEFT))) {
+					if (!(Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyHold(PSP_CTRL_RIGHT))) {
 						//We should return to idle.
 
 						switch (direction) {

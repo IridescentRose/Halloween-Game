@@ -15,7 +15,7 @@ public:
 	Player();
 	~Player();
 
-	void update();
+	void update(double dt);
 	void tick();
 	void draw();
 

@@ -18,6 +18,12 @@ void MainState::init()
 	ambient = new Audio::AudioClip("./assets/snd/ambience" + std::string(S_EXT), true);
 	ambient->SetLoop(true);
 	ambient->Play();
+	roomManager = new RoomManager();
+	
+	bedroomTex = GFX::g_TextureManager->loadTex("./assets/bedroom-lit.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	bedroom = new GFX::Render2D::Sprite(bedroomTex);
+	bedroom->setScale(3.0f, 3.0f);
+	roomManager->addRoom(Room::BedRoom, bedroom);
 }
 
 void MainState::cleanup()
@@ -25,6 +31,7 @@ void MainState::cleanup()
 	ambient->Stop();
 	delete ambient;
 	delete player;
+	delete roomManager;
 }
 
 void MainState::enter()
@@ -50,10 +57,12 @@ void MainState::update(Core::GameStateManager* st)
 		Utilities::g_AppTimer.reset();
 		player->tick();
 	}
-	player->update();
+	roomManager->update(player->pos);
+	player->update(dt);
 }
 
 void MainState::draw(Core::GameStateManager* st)
 {
+	roomManager->draw();
 	player->draw();
 }

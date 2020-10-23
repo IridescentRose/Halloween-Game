@@ -6,6 +6,7 @@
 #include <GFX/2D/Sprite.h>
 #include "../Player.h"
 #include <Audio/AudioClip.h>
+#include "../RoomManager.h"
 
 using namespace Stardust;
 
@@ -26,4 +27,8 @@ public:
 private:
 	Player* player;
 	Audio::AudioClip* ambient;
+	RoomManager* roomManager;
+
+	GFX::Render2D::Sprite* bedroom;
+	unsigned int bedroomTex;
 };

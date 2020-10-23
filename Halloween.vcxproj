@@ -151,12 +151,14 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\RoomManager.cpp" />
     <ClCompile Include="src\States\MainState.cpp" />
     <ClCompile Include="src\States\Menu.cpp" />
     <ClCompile Include="src\States\Splash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\RoomManager.h" />
     <ClInclude Include="src\States\MainState.h" />
     <ClInclude Include="src\States\Menu.h" />
     <ClInclude Include="src\States\Splash.h" />
