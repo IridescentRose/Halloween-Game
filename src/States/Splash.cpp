@@ -2,7 +2,7 @@
 #include "Menu.h"
 
 #ifdef NDEBUG
-#define S_TIME 1.0
+#define S_TIME 4.0
 #else
 #define S_TIME 4.0
 #endif
@@ -36,12 +36,12 @@ void SplashState::pause()
 void SplashState::resume()
 {
 }
-
+MenuState* menu;
 void SplashState::update(Core::GameStateManager* st)
 {
 	Utilities::g_AppTimer.deltaTime();
 	if (Utilities::g_AppTimer.elapsed() >= S_TIME) {
-		MenuState* menu = new MenuState();
+		menu = new MenuState();
 		menu->init();
 		st->changeState(menu);
 	}

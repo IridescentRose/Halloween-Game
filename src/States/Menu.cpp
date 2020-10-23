@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include <Utilities/Input.h>
+#include "MainState.h"
 
 MenuState::MenuState()
 {
@@ -46,14 +47,40 @@ void MenuState::cleanup()
 
 void MenuState::enter()
 {
+	
 }
 
 void MenuState::pause()
 {
+	text.cleanup();
+	music->Stop();
+	delete music;
+	GFX::g_TextureManager->deleteTex(logoTex);
+	delete logo;
 }
 
 void MenuState::resume()
 {
+	music = new Audio::AudioClip("./assets/snd/menu" + std::string(SOUND_EXT), true);
+	music->SetLoop(true);
+	music->Play();
+
+	logoTex = GFX::g_TextureManager->loadTex("./assets/logo.png", GFX_FILTER_LINEAR, GFX_FILTER_LINEAR, true);
+	bloodTex = GFX::g_TextureManager->loadTex("./assets/blood.png", GFX_FILTER_LINEAR, GFX_FILTER_LINEAR, true);
+	buttonTex = GFX::g_TextureManager->loadTex("./assets/button.png", GFX_FILTER_LINEAR, GFX_FILTER_LINEAR, true);
+
+	logo = new GFX::Render2D::Sprite(logoTex);
+	blood = new GFX::Render2D::Sprite(bloodTex);
+	button = new GFX::Render2D::Sprite(buttonTex);
+	button->setScale(2.0f, 2.0f);
+
+	logo->setPosition(240, 32);
+	blood->setPosition(360, 48);
+
+	text.init("./assets/font.pgf");
+	text.setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
+
+	sel = 0;
 }
 
 void MenuState::update(Core::GameStateManager* st)
@@ -75,6 +102,9 @@ void MenuState::update(Core::GameStateManager* st)
 	if (Utilities::KeyPressed(GLFW_KEY_SPACE) || Utilities::KeyPressed(GLFW_KEY_ENTER) || Utilities::KeyPressed(PSP_CTRL_CROSS) || Utilities::KeyPressed(PSP_CTRL_START)) {
 		if (sel == 0) {
 			//Load the game
+			MainState* ms = new MainState();
+			ms->init();
+			st->addState(ms);
 		}
 		else {
 #if CURRENT_PLATFORM == PLATFORM_PSP

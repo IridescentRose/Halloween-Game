@@ -1,7 +1,9 @@
 TARGET = Halloween
 OBJS = src/main.o \
 src/States/Splash.o \
-src/States/Menu.o
+src/States/Menu.o \
+src/States/MainState.o \
+src/Player.o \
 
 INCDIR = $(PSPPATH)/include
 INCDIR += Stardust-Engine/Platform/include Stardust-Engine/Deps/include Stardust-Engine/Utilities/include Stardust-Engine/Core/include
