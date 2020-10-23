@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <Utilities/Input.h>
 
-Player::Player() : x(0), y(0), mainSprite(nullptr), mcTex(0)
+Player::Player() : mainSprite(nullptr), mcTex(0)
 {
 	mcTex = GFX::g_TextureManager->loadTex("./assets/mc.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, true);
 	mainSprite = new GFX::Render2D::CharacterSprite({64, 64}, new GFX::TextureAtlas(4), mcTex);
@@ -51,8 +51,10 @@ Player::Player() : x(0), y(0), mainSprite(nullptr), mcTex(0)
 
 	mainSprite->triggerAnimEvent("idown");
 	mainSprite->tickPhase();
+	mainSprite->setPosition(240, 136);
 
 	currentTickCount = 0;
+	pos = { 240, 136 };
 }
 
 Player::~Player()
@@ -93,6 +95,9 @@ void Player::update()
 		mainSprite->triggerAnimEvent("top");
 		currentTickCount = 0;
 	}
+
+	GFX::gfxSetView(glm::translate(glm::mat4(1), glm::vec3(pos.x - 240, pos.y - 136, 0)));
+
 }
 
 void Player::tick()
@@ -137,6 +142,5 @@ void Player::tick()
 
 void Player::draw()
 {
-	mainSprite->setPosition(x, y);
 	mainSprite->draw();
 }

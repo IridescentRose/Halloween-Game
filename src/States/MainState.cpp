@@ -1,6 +1,12 @@
 #include "MainState.h"
 #include <Utilities/Timer.h>
 
+#if CURRENT_PLATFORM == PLATFORM_PSP
+#define S_EXT ".bgm"
+#else
+#define S_EXT ".ogg"
+#endif
+
 MainState::MainState()
 {
 	
@@ -9,13 +15,16 @@ MainState::MainState()
 void MainState::init()
 {
 	player = new Player();
-	player->x = 240;
-	player->y = 136;
+	ambient = new Audio::AudioClip("./assets/snd/ambience" + std::string(S_EXT), true);
+	ambient->SetLoop(true);
+	ambient->Play();
 }
 
 void MainState::cleanup()
 {
-
+	ambient->Stop();
+	delete ambient;
+	delete player;
 }
 
 void MainState::enter()

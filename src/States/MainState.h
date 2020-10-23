@@ -5,6 +5,7 @@
 #include <Utilities/Timer.h>
 #include <GFX/2D/Sprite.h>
 #include "../Player.h"
+#include <Audio/AudioClip.h>
 
 using namespace Stardust;
 
@@ -24,4 +25,5 @@ public:
 
 private:
 	Player* player;
+	Audio::AudioClip* ambient;
 };

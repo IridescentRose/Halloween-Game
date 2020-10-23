@@ -19,7 +19,7 @@ public:
 	void tick();
 	void draw();
 
-	int x, y;
+	glm::vec2 pos;
 
 private:
 	GFX::Render2D::CharacterSprite* mainSprite;
