@@ -61,16 +61,16 @@ Player::~Player()
 {
 }
 
-void Player::update(double dt)
+void Player::update(double dt, RoomManager* rm)
 {
 	const float playerSpeed = 32.0f * 3.2f;
-
+	glm::vec2 npos = pos;
 	if (Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyHold(PSP_CTRL_DOWN)) {
 		if (direction != Direction::Down) {
 			direction = Direction::Down;
 		}
 		mainSprite->triggerAnimEvent("down");
-		pos.y -= playerSpeed * dt;
+		npos.y -= playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
@@ -79,7 +79,7 @@ void Player::update(double dt)
 			direction = Direction::Left;
 		}
 		mainSprite->triggerAnimEvent("left");
-		pos.x -= playerSpeed * dt;
+		npos.x -= playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
@@ -88,7 +88,7 @@ void Player::update(double dt)
 			direction = Direction::Right;
 		}
 		mainSprite->triggerAnimEvent("right");
-		pos.x += playerSpeed * dt;
+		npos.x += playerSpeed * dt;
 		currentTickCount = 0;
 	}
 	
@@ -97,10 +97,15 @@ void Player::update(double dt)
 			direction = Direction::Top;
 		}
 		mainSprite->triggerAnimEvent("top");
-		pos.y += playerSpeed * dt;
+		npos.y += playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
+	if (rm != nullptr) {
+		if (rm->checkBounds(npos) && rm->checkBounds2(npos)) {
+			pos = npos;
+		}
+	}
 }
 
 void Player::tick()

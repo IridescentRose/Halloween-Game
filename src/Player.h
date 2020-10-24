@@ -1,5 +1,6 @@
 #pragma once
 #include <GFX/2D/CharacterSprite.h>
+#include "RoomManager.h"
 
 using namespace Stardust;
 
@@ -15,7 +16,7 @@ public:
 	Player();
 	~Player();
 
-	void update(double dt);
+	void update(double dt, RoomManager* rm);
 	void tick();
 	void draw();
 

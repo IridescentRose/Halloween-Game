@@ -24,6 +24,15 @@ void MainState::init()
 	bedroom = new GFX::Render2D::Sprite(bedroomTex);
 	bedroom->setScale(3.0f, 3.0f);
 	roomManager->addRoom(Room::BedRoom, bedroom);
+
+	std::vector<glm::vec4>* vec = new std::vector<glm::vec4>();
+
+	vec->push_back({ -128, -10, 550, 200 });
+	vec->push_back({ -128, 165, 100, 200 });
+	vec->push_back({ 250, 165, 550, 200 });
+	vec->push_back({ -128, 16, -32, 160 });
+	
+	roomManager->addBounds(Room::BedRoom, vec);
 }
 
 void MainState::cleanup()
@@ -58,7 +67,7 @@ void MainState::update(Core::GameStateManager* st)
 		player->tick();
 	}
 	roomManager->update(player->pos);
-	player->update(dt);
+	player->update(dt, roomManager);
 }
 
 void MainState::draw(Core::GameStateManager* st)
