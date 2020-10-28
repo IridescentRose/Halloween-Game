@@ -9,8 +9,9 @@ RoomManager::~RoomManager()
 {
 }
 
-void RoomManager::switchRoom(Room)
+void RoomManager::switchRoom(Room r)
 {
+	currentRoom = r;
 }
 
 void RoomManager::addRoom(Room r, GFX::Render2D::Sprite* s)
@@ -50,9 +51,6 @@ bool RoomManager::checkBounds2(glm::vec2 pos)
 			glm::vec2 bot = { vec.x, vec.y };
 			glm::vec2 top = { vec.z, vec.w };
 
-			//if (!(pos.x > top.x || pos.x < bot.x)) {
-			//	return false;
-			//}
 			if (!(pos.y > top.y || pos.y < bot.y) && !(pos.x > top.x || pos.x < bot.x)) {
 				return false;
 			}

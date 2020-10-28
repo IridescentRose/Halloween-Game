@@ -7,6 +7,9 @@ using namespace Stardust;
 
 enum class Room {
 	BedRoom = 0,
+	Hallway = 1,
+	Nursery = 2,
+	Guest = 3,
 };
 
 class RoomManager {

@@ -7,6 +7,10 @@ using namespace Stardust;
 auto main() -> int {
 	Platform::initPlatform("DLII");
 
+#if CURRENT_PLATFORM == PLATFORM_WIN
+	Platform::PC::g_Window->setTitle("Don't Let It In");
+#endif
+
 	GFX::g_RenderCore->setClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	Core::GameStateManager gsm = Core::GameStateManager();
 	SplashState* state = new SplashState();

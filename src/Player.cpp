@@ -66,24 +66,15 @@ void Player::update(double dt, RoomManager* rm)
 	const float playerSpeed = 32.0f * 3.2f;
 	glm::vec2 npos = pos;
 	if (Utilities::KeyPressed(GLFW_KEY_DOWN) || Utilities::KeyPressed(GLFW_KEY_S) || Utilities::KeyHold(PSP_CTRL_DOWN)) {
-		if (direction != Direction::Down) {
-			direction = Direction::Down;
+		if (direction != Direction::Top) {
+			direction = Direction::Top;
 		}
-		mainSprite->triggerAnimEvent("down");
-		npos.y -= playerSpeed * dt;
+		mainSprite->triggerAnimEvent("top");
+		npos.y += playerSpeed * dt;
 		currentTickCount = 0;
 	}
 
 	if (Utilities::KeyPressed(GLFW_KEY_LEFT) || Utilities::KeyPressed(GLFW_KEY_A) || Utilities::KeyHold(PSP_CTRL_LEFT)) {
-		if (direction != Direction::Left) {
-			direction = Direction::Left;
-		}
-		mainSprite->triggerAnimEvent("left");
-		npos.x -= playerSpeed * dt;
-		currentTickCount = 0;
-	}
-
-	if (Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyHold(PSP_CTRL_RIGHT)) {
 		if (direction != Direction::Right) {
 			direction = Direction::Right;
 		}
@@ -91,13 +82,22 @@ void Player::update(double dt, RoomManager* rm)
 		npos.x += playerSpeed * dt;
 		currentTickCount = 0;
 	}
+
+	if (Utilities::KeyPressed(GLFW_KEY_RIGHT) || Utilities::KeyPressed(GLFW_KEY_D) || Utilities::KeyHold(PSP_CTRL_RIGHT)) {
+		if (direction != Direction::Left) {
+			direction = Direction::Left;
+		}
+		mainSprite->triggerAnimEvent("left");
+		npos.x -= playerSpeed * dt;
+		currentTickCount = 0;
+	}
 	
 	if (Utilities::KeyPressed(GLFW_KEY_UP) || Utilities::KeyPressed(GLFW_KEY_W) || Utilities::KeyHold(PSP_CTRL_UP)) {
-		if (direction != Direction::Top) {
-			direction = Direction::Top;
+		if (direction != Direction::Down) {
+			direction = Direction::Down;
 		}
-		mainSprite->triggerAnimEvent("top");
-		npos.y += playerSpeed * dt;
+		mainSprite->triggerAnimEvent("down");
+		npos.y -= playerSpeed * dt;
 		currentTickCount = 0;
 	}
 

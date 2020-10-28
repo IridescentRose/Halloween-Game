@@ -29,6 +29,6 @@ private:
 	Audio::AudioClip* ambient;
 	RoomManager* roomManager;
 
-	GFX::Render2D::Sprite* bedroom;
-	unsigned int bedroomTex;
+	GFX::Render2D::Sprite* bedroom, *hallway, *nursery, *guest, *vignette;
+	unsigned int bedroomTex, hallwayTex, nurseryTex, guestTex, vignetteTex;
 };
