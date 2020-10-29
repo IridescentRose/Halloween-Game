@@ -49,12 +49,12 @@ Player::Player() : mainSprite(nullptr), mcTex(0)
 	mainSprite->addAnimEvent("idown", idown);
 	mainSprite->addAnimEvent("iright", iright);
 
-	mainSprite->triggerAnimEvent("idown");
+	mainSprite->triggerAnimEvent("itop");
 	mainSprite->tickPhase();
 	mainSprite->setPosition(240, 136);
 
 	currentTickCount = 0;
-	pos = { 240, 136 };
+	pos = { 0, 160 };
 }
 
 Player::~Player()

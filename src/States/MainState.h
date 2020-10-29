@@ -7,6 +7,7 @@
 #include "../Player.h"
 #include <Audio/AudioClip.h>
 #include "../RoomManager.h"
+#include <GFX/UI/TextRenderer.h>
 
 using namespace Stardust;
 
@@ -26,9 +27,11 @@ public:
 
 private:
 	Player* player;
-	Audio::AudioClip* ambient;
+	Audio::AudioClip* ambient, *thunderClap;
 	RoomManager* roomManager;
 
-	GFX::Render2D::Sprite* bedroom, *hallway, *nursery, *guest, *vignette;
-	unsigned int bedroomTex, hallwayTex, nurseryTex, guestTex, vignetteTex;
+	GFX::Render2D::Sprite* bedroom, *intro, *hallway, *nursery, *guest, *vignette;
+	unsigned int bedroomTex, introTex, hallwayTex, nurseryTex, guestTex, vignetteTex;
+	bool introDone;
+	GFX::UI::TextRenderer* textR;
 };

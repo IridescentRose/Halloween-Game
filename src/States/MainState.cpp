@@ -16,8 +16,15 @@ void MainState::init()
 	player = new Player();
 	ambient = new Audio::AudioClip("./assets/snd/ambience" + std::string(S_EXT), true);
 	ambient->SetLoop(true);
-	ambient->Play();
+
+	thunderClap = new Audio::AudioClip("./assets/snd/thunder.wav", true);
 	roomManager = new RoomManager();
+	introDone = false;
+
+	introTex = GFX::g_TextureManager->loadTex("./assets/bedroom-lit.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	intro = new GFX::Render2D::Sprite(introTex);
+	intro->setScale(3.0f, 3.0f);
+	intro->setPosition(480, 200);
 	
 	bedroomTex = GFX::g_TextureManager->loadTex("./assets/bedroom.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	bedroom = new GFX::Render2D::Sprite(bedroomTex);
@@ -73,12 +80,16 @@ void MainState::init()
 	vec2->push_back({ -200, 668, 16, 700 });
 	roomManager->addBounds(Room::Hallway, vec2);
 
-	roomManager->switchRoom(Room::Guest);
+	roomManager->switchRoom(Room::BedRoom);
 
 	vignetteTex = GFX::g_TextureManager->loadTex("./assets/vignette.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	vignette = new GFX::Render2D::Sprite(vignetteTex);
 	vignette->setPosition(240, 136);
 
+	textR = new GFX::UI::TextRenderer();
+	textR->init("./assets/font.pgf");
+	textR->setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
+	Utilities::g_AppTimer.reset();
 }
 
 void MainState::cleanup()
@@ -111,17 +122,38 @@ void MainState::update(Core::GameStateManager* st)
 {
 	double dt = Utilities::g_AppTimer.deltaTime();
 
-	if (Utilities::g_AppTimer.elapsed() > 0.20) {
-		Utilities::g_AppTimer.reset();
-		player->tick();
+	if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
+		if (Utilities::g_AppTimer.elapsed() > 3.0 && Utilities::g_AppTimer.elapsed() < 3.1) {
+			thunderClap->Play(1);
+		}
 	}
-	roomManager->update(player->pos);
-	player->update(dt, roomManager);
+	else {
+		if (!introDone) {
+			ambient->Play();
+		}
+		introDone = true;
+		if (Utilities::g_AppTimer.elapsed() > 0.20) {
+			Utilities::g_AppTimer.reset();
+			player->tick();
+		}
+		roomManager->update(player->pos);
+		player->update(dt, roomManager);
+	}
 }
 
 void MainState::draw(Core::GameStateManager* st)
 {
-	roomManager->draw();
-	player->draw();
-	vignette->draw();
+	if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
+		if (Utilities::g_AppTimer.elapsed() > 3.1) {
+			textR->draw("Keep all windows closed.", { 240, 136 });
+		}
+		else {
+			intro->draw();
+		}
+	}
+	else {
+		roomManager->draw();
+		player->draw();
+		vignette->draw();
+	}
 }
