@@ -36,7 +36,12 @@ void MainState::init()
 	vec->push_back({ -128, 165, 100, 200 });
 	vec->push_back({ 250, 165, 550, 200 });
 	vec->push_back({ -128, 16, -32, 160 });
+
+
+	std::vector<TPInfo>* tpvec = new std::vector<TPInfo>();
+	tpvec->push_back({ { 72, -10, 312, 16 } , {100, -128}, Room::Hallway, player });
 	roomManager->addBounds(Room::BedRoom, vec);
+	roomManager->addTeleport(Room::BedRoom, tpvec);
 
 	nurseryTex = GFX::g_TextureManager->loadTex("./assets/nursery.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	nursery = new GFX::Render2D::Sprite(nurseryTex);
@@ -50,6 +55,10 @@ void MainState::init()
 	vec3->push_back({ 180, 80, 280, 200 });
 	roomManager->addBounds(Room::Nursery, vec3);
 
+	std::vector<TPInfo>* tpvec3 = new std::vector<TPInfo>();
+	tpvec3->push_back({ { 460, -32, 500, 84 } , {684, 600}, Room::Hallway, player });
+	roomManager->addTeleport(Room::Nursery, tpvec3);
+	
 	guestTex = GFX::g_TextureManager->loadTex("./assets/guest.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	guest = new GFX::Render2D::Sprite(guestTex);
 	guest->setScale(3.0f, 3.0f);
@@ -62,6 +71,11 @@ void MainState::init()
 	vec4->push_back({ 52, 232, 224, 272 });
 	vec4->push_back({ 260, 232, 412, 272 });
 	roomManager->addBounds(Room::Guest, vec4);
+
+
+	std::vector<TPInfo>* tpvec4 = new std::vector<TPInfo>();
+	tpvec4->push_back({ { 200, 4, 264, 32} , {-260, 600}, Room::Hallway, player });
+	roomManager->addTeleport(Room::Guest, tpvec4);
 
 
 	hallwayTex = GFX::g_TextureManager->loadTex("./assets/hallway.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
@@ -78,6 +92,12 @@ void MainState::init()
 	vec2->push_back({ 768, 640, 840, 700 });
 	vec2->push_back({ 360, 668, 716, 700 });
 	vec2->push_back({ -200, 668, 16, 700 });
+	std::vector<TPInfo>* tpvec2 = new std::vector<TPInfo>();
+	tpvec2->push_back({ { -64, -240, 256, -200 } , {192, 64}, Room::BedRoom, player });
+	tpvec2->push_back({ { 680, 640, 840, 700 } , {400, 48}, Room::Nursery, player });
+	tpvec2->push_back({ { -320, 660, -200, 700 } , {232, 72}, Room::Guest, player });
+
+	roomManager->addTeleport(Room::Hallway, tpvec2);
 	roomManager->addBounds(Room::Hallway, vec2);
 
 	roomManager->switchRoom(Room::BedRoom);
@@ -89,7 +109,6 @@ void MainState::init()
 	textR = new GFX::UI::TextRenderer();
 	textR->init("./assets/font.pgf");
 	textR->setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
-	Utilities::g_AppTimer.reset();
 }
 
 void MainState::cleanup()
@@ -105,7 +124,7 @@ void MainState::cleanup()
 
 void MainState::enter()
 {
-
+	Utilities::g_AppTimer.reset();
 }
 
 void MainState::pause()
@@ -121,6 +140,7 @@ void MainState::resume()
 void MainState::update(Core::GameStateManager* st)
 {
 	double dt = Utilities::g_AppTimer.deltaTime();
+
 
 	if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
 		if (Utilities::g_AppTimer.elapsed() > 3.0 && Utilities::g_AppTimer.elapsed() < 3.1) {

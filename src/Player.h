@@ -11,6 +11,8 @@ enum class Direction {
 	Top
 };
 
+class RoomManager;
+
 class Player {
 public:
 	Player();

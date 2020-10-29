@@ -1,11 +1,7 @@
 #include "Splash.h"
 #include "Menu.h"
 
-#ifdef NDEBUG
-#define S_TIME 0.0
-#else
 #define S_TIME 4.0
-#endif
 
 SplashState::SplashState(): sprt()
 {

@@ -3,6 +3,7 @@
 RoomManager::RoomManager()
 {
 	currentRoom = Room::BedRoom;
+	tpmap.clear();
 }
 
 RoomManager::~RoomManager()
@@ -24,6 +25,11 @@ void RoomManager::addBounds(Room r, std::vector<glm::vec4> *bounds)
 	boundsmap.emplace(r, bounds);
 }
 
+void RoomManager::addTeleport(Room r, std::vector<TPInfo>* info)
+{
+	tpmap.emplace(r, info);
+}
+
 bool RoomManager::checkBounds(glm::vec2 pos)
 {
 	if (boundsmap.find(currentRoom) != boundsmap.end()) {
@@ -41,8 +47,25 @@ bool RoomManager::checkBounds(glm::vec2 pos)
 	return false;
 }
 
+#include <iostream>
 bool RoomManager::checkBounds2(glm::vec2 pos)
 {
+	if (tpmap.find(currentRoom) != tpmap.end()) {
+		auto tpVec = *tpmap[currentRoom];
+
+		for (auto& tp : tpVec) {
+			glm::vec2 bot = { tp.bounds.x, tp.bounds.y };
+			glm::vec2 top = { tp.bounds.z, tp.bounds.w };
+
+			if (!(pos.y > top.y || pos.y < bot.y) && !(pos.x > top.x || pos.x < bot.x)) {
+				tp.p->pos = tp.pos;
+				switchRoom(tp.destination);
+				return false;
+				break;
+			}
+		}
+	}
+
 	if (boundsmap.find(currentRoom) != boundsmap.end()) {
 		std::vector<glm::vec4>* v = boundsmap[currentRoom];
 
@@ -60,7 +83,6 @@ bool RoomManager::checkBounds2(glm::vec2 pos)
 	}
 	return false;
 }
-
 void RoomManager::update(glm::vec2 pos){
 	if (spritemap.find(currentRoom) != spritemap.end()) {
 		spritemap[currentRoom]->setPosition(480 - pos.x, pos.y);
