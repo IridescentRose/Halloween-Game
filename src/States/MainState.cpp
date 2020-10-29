@@ -27,11 +27,17 @@ void MainState::init()
 	intro = new GFX::Render2D::Sprite(introTex);
 	intro->setScale(3.0f, 3.0f);
 	intro->setPosition(480, 200);
-	
+
 	bedroomTex = GFX::g_TextureManager->loadTex("./assets/bedroom.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	bedroom = new GFX::Render2D::Sprite(bedroomTex);
 	bedroom->setScale(3.0f, 3.0f);
-	roomManager->addRoom(Room::BedRoom, bedroom);
+
+
+	bedroom2Tex = GFX::g_TextureManager->loadTex("./assets/bedroom-e.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	bedroom2 = new GFX::Render2D::Sprite(bedroom2Tex);
+	bedroom2->setScale(3.0f, 3.0f);
+
+	roomManager->addRoom(Room::BedRoom, { bedroom, bedroom2 });
 
 	std::vector<glm::vec4>* vec = new std::vector<glm::vec4>();
 	vec->push_back({ -128, -10, 550, 200 });
@@ -48,7 +54,11 @@ void MainState::init()
 	nurseryTex = GFX::g_TextureManager->loadTex("./assets/nursery.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	nursery = new GFX::Render2D::Sprite(nurseryTex);
 	nursery->setScale(3.0f, 3.0f);
-	roomManager->addRoom(Room::Nursery, nursery);
+
+	nursery2Tex = GFX::g_TextureManager->loadTex("./assets/nursery-e.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	nursery2 = new GFX::Render2D::Sprite(nursery2Tex);
+	nursery2->setScale(3.0f, 3.0f);
+	roomManager->addRoom(Room::Nursery, { nursery, nursery2 });
 
 	std::vector<glm::vec4>* vec3 = new std::vector<glm::vec4>();
 	vec3->push_back({ -8, -56, 500, 300 });
@@ -60,11 +70,15 @@ void MainState::init()
 	std::vector<TPInfo>* tpvec3 = new std::vector<TPInfo>();
 	tpvec3->push_back({ { 460, -32, 500, 84 } , {684, 600}, Room::Hallway, player });
 	roomManager->addTeleport(Room::Nursery, tpvec3);
-	
+
 	guestTex = GFX::g_TextureManager->loadTex("./assets/guest.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	guest = new GFX::Render2D::Sprite(guestTex);
 	guest->setScale(3.0f, 3.0f);
-	roomManager->addRoom(Room::Guest, guest);
+
+	guest2Tex = GFX::g_TextureManager->loadTex("./assets/guest-e.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	guest2 = new GFX::Render2D::Sprite(guest2Tex);
+	guest2->setScale(3.0f, 3.0f);
+	roomManager->addRoom(Room::Guest, { guest, guest2 });
 
 	std::vector<glm::vec4>* vec4 = new std::vector<glm::vec4>();
 	vec4->push_back({ 52, 4, 412, 272 });
@@ -74,7 +88,6 @@ void MainState::init()
 	vec4->push_back({ 260, 232, 412, 272 });
 	roomManager->addBounds(Room::Guest, vec4);
 
-
 	std::vector<TPInfo>* tpvec4 = new std::vector<TPInfo>();
 	tpvec4->push_back({ { 200, 4, 264, 32} , {-260, 600}, Room::Hallway, player });
 	roomManager->addTeleport(Room::Guest, tpvec4);
@@ -83,7 +96,7 @@ void MainState::init()
 	hallwayTex = GFX::g_TextureManager->loadTex("./assets/hallway.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	hallway = new GFX::Render2D::Sprite(hallwayTex);
 	hallway->setScale(3.0f, 3.0f);
-	roomManager->addRoom(Room::Hallway, hallway);
+	roomManager->addRoom(Room::Hallway, { hallway, hallway });
 
 	std::vector<glm::vec4>* vec2 = new std::vector<glm::vec4>();
 	vec2->push_back({ -400, -240, 840, 700 }); //Main box
@@ -117,7 +130,7 @@ void MainState::init()
 	textR->setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
 	isDead = false;
 
-	die();
+	roomManager->setRoomState(Room::Nursery, true);
 }
 
 void MainState::cleanup()

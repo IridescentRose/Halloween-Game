@@ -1,9 +1,15 @@
 #include "RoomManager.h"
 
+#include <Utilities/Input.h>
+
 RoomManager::RoomManager()
 {
 	currentRoom = Room::BedRoom;
 	tpmap.clear();
+
+	for (auto i = 0; i < 4; i++) {
+		stateMap[i] = false;
+	}
 }
 
 RoomManager::~RoomManager()
@@ -15,7 +21,7 @@ void RoomManager::switchRoom(Room r)
 	currentRoom = r;
 }
 
-void RoomManager::addRoom(Room r, GFX::Render2D::Sprite* s)
+void RoomManager::addRoom(Room r, std::array<GFX::Render2D::Sprite*, 2> s)
 {
 	spritemap.emplace(r, s);
 }
@@ -28,6 +34,11 @@ void RoomManager::addBounds(Room r, std::vector<glm::vec4> *bounds)
 void RoomManager::addTeleport(Room r, std::vector<TPInfo>* info)
 {
 	tpmap.emplace(r, info);
+}
+
+void RoomManager::setRoomState(Room r, bool b)
+{
+	stateMap[(int)r] = b;
 }
 
 bool RoomManager::checkBounds(glm::vec2 pos)
@@ -85,13 +96,51 @@ bool RoomManager::checkBounds2(glm::vec2 pos)
 }
 void RoomManager::update(glm::vec2 pos){
 	if (spritemap.find(currentRoom) != spritemap.end()) {
-		spritemap[currentRoom]->setPosition(480 - pos.x, pos.y);
+		spritemap[currentRoom][0]->setPosition(480 - pos.x, pos.y);
+		spritemap[currentRoom][1]->setPosition(480 - pos.x, pos.y);
+
+		if (stateMap[(int)currentRoom]) {
+			//Check if we have pressed X to close window.
+			if (Utilities::KeyPressed(GLFW_KEY_X) || Utilities::KeyHold(PSP_CTRL_CROSS)) {
+				switch (currentRoom) {
+				case Room::BedRoom: {
+					if (!(pos.y > 200 || pos.y < 180) && !(pos.x > 312 || pos.x < 72)) {
+						setRoomState(currentRoom, false);
+					}
+					break;
+				}
+
+				case Room::Guest: {
+					if (!(pos.y > 272 || pos.y < 224) && !(pos.x > 264 || pos.x < 200)) {
+						setRoomState(currentRoom, false);
+					}
+					break;
+				}
+
+				case Room::Nursery: {
+					if (!(pos.y > 300 || pos.y < 260) && !(pos.x > 460 || pos.x < 160)) {
+						setRoomState(currentRoom, false);
+					}
+					break;
+				}
+
+				default: 
+					break;
+				}
+			}
+		}
+
 	}
 }
 
 void RoomManager::draw()
 {
 	if (spritemap.find(currentRoom) != spritemap.end()) {
-		spritemap[currentRoom]->draw();
+		if (stateMap[(int)currentRoom]) {
+			spritemap[currentRoom][1]->draw();
+		}
+		else {
+			spritemap[currentRoom][0]->draw();
+		}
 	}
 }

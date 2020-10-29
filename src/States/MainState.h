@@ -31,8 +31,8 @@ private:
 	Audio::AudioClip* ambient, *thunderClap, *monster;
 	RoomManager* roomManager;
 
-	GFX::Render2D::Sprite* bedroom, *intro, *hallway, *nursery, *guest, *vignette, *gameOver;
-	unsigned int bedroomTex, introTex, hallwayTex, nurseryTex, guestTex, vignetteTex, gameOverTex;
+	GFX::Render2D::Sprite* bedroom, *bedroom2, *intro, *hallway, *nursery, *nursery2, *guest, *guest2, *vignette, *gameOver;
+	unsigned int bedroomTex, bedroom2Tex, introTex, hallwayTex, nurseryTex, nursery2Tex, guestTex, guest2Tex, vignetteTex, gameOverTex;
 	bool introDone;
 	bool isDead;
 	GFX::UI::TextRenderer* textR;
