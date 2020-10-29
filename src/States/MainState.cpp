@@ -1,5 +1,6 @@
 #include "MainState.h"
 #include <Utilities/Timer.h>
+#include <Utilities/Input.h>
 
 #if CURRENT_PLATFORM == PLATFORM_PSP
 #define S_EXT ".bgm"
@@ -17,7 +18,8 @@ void MainState::init()
 	ambient = new Audio::AudioClip("./assets/snd/ambience" + std::string(S_EXT), true);
 	ambient->SetLoop(true);
 
-	thunderClap = new Audio::AudioClip("./assets/snd/thunder.wav", true);
+	thunderClap = new Audio::AudioClip("./assets/snd/thunder.wav", false);
+	monster = new Audio::AudioClip("./assets/snd/monster.wav", false);
 	roomManager = new RoomManager();
 	introDone = false;
 
@@ -106,9 +108,16 @@ void MainState::init()
 	vignette = new GFX::Render2D::Sprite(vignetteTex);
 	vignette->setPosition(240, 136);
 
+	gameOverTex = GFX::g_TextureManager->loadTex("./assets/die.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
+	gameOver = new GFX::Render2D::Sprite(gameOverTex);
+	gameOver->setPosition(240, 136);
+
 	textR = new GFX::UI::TextRenderer();
 	textR->init("./assets/font.pgf");
 	textR->setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
+	isDead = false;
+
+	die();
 }
 
 void MainState::cleanup()
@@ -139,41 +148,64 @@ void MainState::resume()
 
 void MainState::update(Core::GameStateManager* st)
 {
-	double dt = Utilities::g_AppTimer.deltaTime();
+	if (!isDead) {
+		double dt = Utilities::g_AppTimer.deltaTime();
 
 
-	if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
-		if (Utilities::g_AppTimer.elapsed() > 3.0 && Utilities::g_AppTimer.elapsed() < 3.1) {
-			thunderClap->Play(1);
+		if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
+			if (Utilities::g_AppTimer.elapsed() > 3.0 && Utilities::g_AppTimer.elapsed() < 3.1) {
+				thunderClap->Play(1);
+			}
+		}
+		else {
+			if (!introDone) {
+				ambient->Play();
+			}
+			introDone = true;
+			if (Utilities::g_AppTimer.elapsed() > 0.20) {
+				Utilities::g_AppTimer.reset();
+				player->tick();
+			}
+			roomManager->update(player->pos);
+			player->update(dt, roomManager);
 		}
 	}
 	else {
-		if (!introDone) {
-			ambient->Play();
+		if (Utilities::KeyPressed(GLFW_KEY_X) || Utilities::KeyHold(PSP_CTRL_CROSS)) {
+#if CURRENT_PLATFORM == PLATFORM_PSP
+			Platform::exitPlatform();
+#else
+			exit(0);
+#endif
 		}
-		introDone = true;
-		if (Utilities::g_AppTimer.elapsed() > 0.20) {
-			Utilities::g_AppTimer.reset();
-			player->tick();
-		}
-		roomManager->update(player->pos);
-		player->update(dt, roomManager);
 	}
 }
 
 void MainState::draw(Core::GameStateManager* st)
 {
-	if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
-		if (Utilities::g_AppTimer.elapsed() > 3.1) {
-			textR->draw("Keep all windows closed.", { 240, 136 });
+	if (!isDead) {
+		if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
+			if (Utilities::g_AppTimer.elapsed() > 3.1) {
+				textR->draw("Keep all windows closed.", { 240, 136 });
+			}
+			else {
+				intro->draw();
+			}
 		}
 		else {
-			intro->draw();
+			roomManager->draw();
+			player->draw();
+			vignette->draw();
 		}
 	}
 	else {
-		roomManager->draw();
-		player->draw();
-		vignette->draw();
+		gameOver->draw();
 	}
+}
+
+void MainState::die()
+{
+	isDead = true;
+	monster->Play(3);
+	ambient->Stop();
 }

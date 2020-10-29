@@ -25,13 +25,15 @@ public:
 	void update(Core::GameStateManager* st);
 	void draw(Core::GameStateManager* st);
 
+	void die();
 private:
 	Player* player;
-	Audio::AudioClip* ambient, *thunderClap;
+	Audio::AudioClip* ambient, *thunderClap, *monster;
 	RoomManager* roomManager;
 
-	GFX::Render2D::Sprite* bedroom, *intro, *hallway, *nursery, *guest, *vignette;
-	unsigned int bedroomTex, introTex, hallwayTex, nurseryTex, guestTex, vignetteTex;
+	GFX::Render2D::Sprite* bedroom, *intro, *hallway, *nursery, *guest, *vignette, *gameOver;
+	unsigned int bedroomTex, introTex, hallwayTex, nurseryTex, guestTex, vignetteTex, gameOverTex;
 	bool introDone;
+	bool isDead;
 	GFX::UI::TextRenderer* textR;
 };
