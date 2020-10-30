@@ -28,7 +28,7 @@ public:
 	void die();
 private:
 	Player* player;
-	Audio::AudioClip* ambient, *thunderClap, *monster;
+	Audio::AudioClip* ambient, *thunderClap, *monster, *creak;
 	RoomManager* roomManager;
 
 	GFX::Render2D::Sprite* bedroom, *bedroom2, *intro, *hallway, *nursery, *nursery2, *guest, *guest2, *vignette, *gameOver;
@@ -36,4 +36,8 @@ private:
 	bool introDone;
 	bool isDead;
 	GFX::UI::TextRenderer* textR;
+
+	float roomsDeathTimer[3];
+	float newWindowTimer;
+	int timesOpened;
 };

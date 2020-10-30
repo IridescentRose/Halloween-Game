@@ -3,7 +3,7 @@
 #include <vector>
 #include <GFX/2D/Sprite.h>
 #include "Player.h"
-
+#include <Audio/AudioClip.h>
 using namespace Stardust;
 
 
@@ -47,4 +47,5 @@ private:
 	std::map<Room, std::array<GFX::Render2D::Sprite*, 2>> spritemap;
 	std::map<Room, std::vector<TPInfo>*> tpmap;
 	std::map<Room, std::vector<glm::vec4>*> boundsmap;
+	Audio::AudioClip* close;
 };

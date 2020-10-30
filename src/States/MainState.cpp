@@ -8,7 +8,7 @@
 #define S_EXT ".ogg"
 #endif
 
-MainState::MainState(){
+MainState::MainState(): newWindowTimer(5.0f){
 	
 }
 
@@ -20,6 +20,7 @@ void MainState::init()
 
 	thunderClap = new Audio::AudioClip("./assets/snd/thunder.wav", false);
 	monster = new Audio::AudioClip("./assets/snd/monster.wav", false);
+	creak = new Audio::AudioClip("./assets/snd/creak.wav", false);
 	roomManager = new RoomManager();
 	introDone = false;
 
@@ -91,7 +92,7 @@ void MainState::init()
 	std::vector<TPInfo>* tpvec4 = new std::vector<TPInfo>();
 	tpvec4->push_back({ { 200, 4, 264, 32} , {-260, 600}, Room::Hallway, player });
 	roomManager->addTeleport(Room::Guest, tpvec4);
-
+	timesOpened = 0;
 
 	hallwayTex = GFX::g_TextureManager->loadTex("./assets/hallway.png", GFX_FILTER_NEAREST, GFX_FILTER_NEAREST, false);
 	hallway = new GFX::Render2D::Sprite(hallwayTex);
@@ -130,7 +131,9 @@ void MainState::init()
 	textR->setStyle({ 255, 255, 255, 255, 1.0f, TEXT_RENDERER_CENTER, TEXT_RENDERER_CENTER, 0.0f, 0 });
 	isDead = false;
 
-	roomManager->setRoomState(Room::Nursery, true);
+	for (auto i = 0; i < 3; i++) {
+		roomsDeathTimer[i] = 100000;
+	}
 }
 
 void MainState::cleanup()
@@ -164,6 +167,98 @@ void MainState::update(Core::GameStateManager* st)
 	if (!isDead) {
 		double dt = Utilities::g_AppTimer.deltaTime();
 
+		newWindowTimer -= dt;
+		if (newWindowTimer <= 0) {
+			timesOpened++;
+			if (timesOpened > 10) {
+				timesOpened = 10;
+			}
+			newWindowTimer = rand() % (20-timesOpened) + 12;
+			
+			creak->Play(5);
+			if (roomManager->stateMap[0] && roomManager->stateMap[2] && roomManager->stateMap[3]) {
+				//Well this is instant death
+				die();
+				return;
+			}
+			else {
+				int r = rand() % 3;
+				switch (r) {
+				case 0: {
+					if (!roomManager->stateMap[0]) {
+						roomManager->stateMap[0] = true;
+						roomsDeathTimer[0] = 60 - timesOpened;
+					}
+					else {
+						if (!roomManager->stateMap[2]) {
+							roomManager->stateMap[2] = true;
+							roomsDeathTimer[1] = 60 - timesOpened;
+						}
+						else {
+							roomManager->stateMap[3] = true;
+							roomsDeathTimer[2] = 60 - timesOpened;
+						}
+					}
+					break;
+				}
+
+				case 1: {
+					if (!roomManager->stateMap[2]) {
+						roomManager->stateMap[2] = true;
+						roomsDeathTimer[1] = 60 - timesOpened;
+					}
+					else {
+						if (!roomManager->stateMap[0]) {
+							roomManager->stateMap[0] = true;
+							roomsDeathTimer[0] = 60 - timesOpened;
+						}
+						else {
+							roomManager->stateMap[3] = true;
+							roomsDeathTimer[2] = 60 - timesOpened;
+						}
+					}
+					break;
+				}
+
+				case 2: {
+					if (!roomManager->stateMap[3]) {
+						roomManager->stateMap[3] = true;
+						roomsDeathTimer[2] = 60 - timesOpened;
+					}
+					else {
+						if (!roomManager->stateMap[0]) {
+							roomManager->stateMap[0] = true;
+							roomsDeathTimer[0] = 60 - timesOpened;
+						}
+						else {
+							roomManager->stateMap[2] = true;
+							roomsDeathTimer[1] = 60 - timesOpened;
+						}
+					}
+					break;
+				}
+				};
+
+			}
+		}
+
+		if (roomManager->stateMap[0]) {
+			roomsDeathTimer[0] -= dt;
+		}
+
+		if (roomManager->stateMap[2]) {
+			roomsDeathTimer[1] -= dt;
+		}
+
+		if (roomManager->stateMap[3]) {
+			roomsDeathTimer[2] -= dt;
+		}
+
+		for (auto i = 0; i < 3; i++) {
+			if (roomsDeathTimer[i] < 0) {
+				die();
+			}
+		}
 
 		if (!introDone && Utilities::g_AppTimer.elapsed() < 5.0) {
 			if (Utilities::g_AppTimer.elapsed() > 3.0 && Utilities::g_AppTimer.elapsed() < 3.1) {

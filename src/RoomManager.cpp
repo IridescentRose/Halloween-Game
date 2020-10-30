@@ -10,6 +10,7 @@ RoomManager::RoomManager()
 	for (auto i = 0; i < 4; i++) {
 		stateMap[i] = false;
 	}
+	close = new Audio::AudioClip("./assets/snd/close.wav");
 }
 
 RoomManager::~RoomManager()
@@ -106,6 +107,7 @@ void RoomManager::update(glm::vec2 pos){
 				case Room::BedRoom: {
 					if (!(pos.y > 200 || pos.y < 180) && !(pos.x > 312 || pos.x < 72)) {
 						setRoomState(currentRoom, false);
+						close->Play(4);
 					}
 					break;
 				}
@@ -113,6 +115,7 @@ void RoomManager::update(glm::vec2 pos){
 				case Room::Guest: {
 					if (!(pos.y > 272 || pos.y < 224) && !(pos.x > 264 || pos.x < 200)) {
 						setRoomState(currentRoom, false);
+						close->Play(4);
 					}
 					break;
 				}
@@ -120,6 +123,7 @@ void RoomManager::update(glm::vec2 pos){
 				case Room::Nursery: {
 					if (!(pos.y > 300 || pos.y < 260) && !(pos.x > 460 || pos.x < 160)) {
 						setRoomState(currentRoom, false);
+						close->Play(4);
 					}
 					break;
 				}
